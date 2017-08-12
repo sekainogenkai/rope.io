@@ -2,8 +2,6 @@
 
 const express = require('express');
 const path = require('path');
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
 const app = express();
 
 app.use((req, res, next) => {
