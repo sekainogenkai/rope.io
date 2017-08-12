@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import { Switch, Route, Link} from 'react-router-dom';
+
+import MainPage from './pages/MainPage';
+import AdminPage from './pages/AdminPage';
 
 import axios from 'axios';
 import l from './l';
@@ -23,60 +27,36 @@ const styles = {
   }
 }
 
-class App extends Component {
+export default class App extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      displayName: '',
-      message: '',
+  }
+
+  pageSwitcher() {
+    const ExtractAdminPage = ({match, history, location}) => {
+      return <AdminPage
+        history={history}
+        />;
     };
-    this.loadMessage();
-  }
-
-  loadMessage() {
-    axios.get(l`/api/message`).then(res => {
-      this.setState({message: res.message});
-    }).catch(err => {
-      console.error(err);
-      this.setState({message: 'Failed to load message'});
-    })
-  }
-
-  handleSubmit(e) {
-    e.preventDefault();
-    axios.put(l`/api/displayName`, {displayName: this.state.displayName}).then(res => {
-    }).catch(err => {
-      console.error(err);
-      alert('Connection to server failed');
-    })
-  }
-
-  handleDisplayNameChange(e) {
-    e.preventDefault();
-    this.setState({displayName: e.target.value});
+    const ExtractMainPage = ({match, history, location}) => {
+      return <MainPage
+        history={history}
+      />;
+    };
+    return (
+      <Switch>
+        <Route path={'/admin'} render={ExtractAdminPage}/>
+        <Route path={'/'} render={ExtractMainPage}/>
+      </Switch>
+    )
   }
 
   render() {
     const state = this.state;
     return (
       <div style={styles.App}>
-        <div style={styles.AppHeader}>
-          <h2>rope.io</h2>
-        </div>
-        <div style={styles.Message}>
-            <h2>Message From the Creators</h2>
-            <p>{state.message}</p>
-          </div>
-          <div style={styles.GameStart}>
-            <span>Welcome to rope.io. Please enter your display name.</span>
-            <form>
-              <input onChange={this.handleDisplayNameChange}/>
-              <button type='submit'>Play</button>
-            </form>
-          </div>
+        {this.pageSwitcher()}
       </div>
     );
   }
 }
-
-export default App;
