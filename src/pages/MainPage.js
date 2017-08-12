@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import l from '../l';
 
-import PixiJS from './game/react-pixi';
+import Game from './game/react-pixi';
 import Menu from './menu/menu';
 
 const styles = {
@@ -55,7 +55,7 @@ export default class MainPage extends Component {
     const state = this.state;
     return (
       <div style={styles.MainPage}>
-        <PixiJS/>
+        <Game/>
         {this.state.menu ?
           <Menu
             displayName={this.state.displayName}

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import * as PIXI from 'pixi.js'; //https://github.com/pixijs/pixi.js/issues/3224
 
-export default class PixiJS extends Component {
+export default class Game extends Component {
   componentDidMount() {
     this.app = new PIXI.Application(window.innerWidth, window.innerHeight, {
       view: this.canvas,

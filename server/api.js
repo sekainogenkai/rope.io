@@ -10,5 +10,8 @@ const io = require('socket.io')(http);
 
 api.use(bodyParser.json());
 
+io.on('connection', (socket) => {
+  console.log('A user connected!', socket.handshake.query.type);
+});
 
 module.exports = api;
