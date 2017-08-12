@@ -2,10 +2,10 @@
 
 const express = require('express');
 const bodyParser = require('body-parser');
-const http = require('http').Server(app);
-const io = require('socket.io')(http);
-
 
 const api = express();
+
+const http = require('http').Server(api);
+const io = require('socket.io')(http);
 
 api.use(bodyParser.json());
