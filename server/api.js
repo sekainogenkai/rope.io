@@ -9,3 +9,6 @@ const http = require('http').Server(api);
 const io = require('socket.io')(http);
 
 api.use(bodyParser.json());
+
+
+module.exports = api;

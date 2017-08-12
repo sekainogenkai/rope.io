@@ -4,7 +4,6 @@
 // from __future__ import process_dies_on_unhandled_rejection
 process.on('unhandledRejection', (reason, p) => {
   console.log('Unhandled Rejection:', reason);
-  console.log('Dying to implement future nodejs functionality. Remove when nodejs-9 is out and we’re actually using it in production.');
   process.exit(1);
 });
 
