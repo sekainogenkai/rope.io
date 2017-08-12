@@ -2,22 +2,14 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import l from '../l';
 
+import PixiJS from './game/react-pixi';
+import Menu from './menu/menu';
+
 const styles = {
-  App: {
-    backgroundColor: '#545523',
-    height: '100vh',
-  },
-  AppHeader: {
-    textAlign: 'center',
-    backgroundColor: '#934023',
-  },
-  Message: {
-    width: '300px',
-    margin: '0 auto',
-  },
-  GameStart: {
-    width: '300px',
-    margin: '0 auto',
+  MainPage: {
+    width: '100%',
+    height: '100%',
+    overflow: 'hidden',
   }
 }
 
@@ -25,9 +17,13 @@ export default class MainPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      displayName: '',
       message: '',
+      displayName: '',
+      menu: true,
     };
+  }
+
+  componentDidMount() {
     this.loadMessage();
   }
 
@@ -40,16 +36,17 @@ export default class MainPage extends Component {
     })
   }
 
-  handleSubmit(e) {
+  handleNameSubmit = (e) => {
     e.preventDefault();
     axios.put(l`/api/displayName`, {displayName: this.state.displayName}).then(res => {
+      // Do something
     }).catch(err => {
       console.error(err);
       alert('Connection to server failed');
     })
   }
 
-  handleDisplayNameChange(e) {
+  handleNameChange = (e) => {
     e.preventDefault();
     this.setState({displayName: e.target.value});
   }
@@ -57,21 +54,15 @@ export default class MainPage extends Component {
   render() {
     const state = this.state;
     return (
-      <div style={styles.App}>
-        <div style={styles.AppHeader}>
-          <h2>rope.io</h2>
-        </div>
-        <div style={styles.Message}>
-            <h2>Message From the Creators</h2>
-            <p>{state.message}</p>
-          </div>
-          <div style={styles.GameStart}>
-            <span>Welcome to rope.io. Please enter your display name.</span>
-            <form>
-              <input onChange={this.handleDisplayNameChange}/>
-              <button type='submit'>Play</button>
-            </form>
-          </div>
+      <div style={styles.MainPage}>
+        <PixiJS/>
+        {this.state.menu ?
+          <Menu
+            displayName={this.state.displayName}
+            onNameChange={this.handleNameChange}
+            onNameSubmit={this.handleNameSubmit}
+          />
+        : []}
       </div>
     );
   }
