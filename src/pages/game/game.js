@@ -1,7 +1,24 @@
 import React, {Component} from 'react';
+import io from 'socket.io-client';
 import * as PIXI from 'pixi.js'; //https://github.com/pixijs/pixi.js/issues/3224
 
 export default class Game extends Component {
+  constructor(props) {
+    super(props);
+    this.socket = null;
+  }
+
+  componentWillReceiveProps(nextProps) {
+    console.log('recieving next props');
+    if (!nextProps.menu && this.props.menu) {
+      console.log('we are going to try to connect');
+      if (!this.socket) {
+        this.socket = io();
+        this.handleConnect(this.socket);
+      }
+    }
+  }
+
   componentDidMount() {
     this.app = new PIXI.Application(window.innerWidth, window.innerHeight, {
       view: this.canvas,
@@ -15,8 +32,11 @@ export default class Game extends Component {
     window.addEventListener('resize', this.handleWindowResize);
   }
 
-  componentWillUnmount() {
-    // Maybe do some unmounting business
+  handleConnect(socket) {
+    socket('pongcheck', () => {
+      const latency = Date.now();
+      console.log('Latency: ' + latency + 'ms');
+    });
   }
 
   render() {

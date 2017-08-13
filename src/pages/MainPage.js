@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import l from '../l';
 
-import Game from './game/react-pixi';
+import Game from './game/game';
 import Menu from './menu/menu';
 
 const styles = {
@@ -33,17 +33,13 @@ export default class MainPage extends Component {
     }).catch(err => {
       console.error(err);
       this.setState({message: 'Failed to load message'});
-    })
+    });
   }
 
-  handleNameSubmit = (e) => {
-    e.preventDefault();
-    axios.put(l`/api/displayName`, {displayName: this.state.displayName}).then(res => {
-      // Do something
-    }).catch(err => {
-      console.error(err);
-      alert('Connection to server failed');
-    })
+  handleGameStart = () => {
+    if (this.state.displayName) {
+      this.setState({ menu: false });
+    }
   }
 
   handleNameChange = (e) => {
@@ -55,12 +51,15 @@ export default class MainPage extends Component {
     const state = this.state;
     return (
       <div style={styles.MainPage}>
-        <Game/>
-        {this.state.menu ?
+        <Game
+          displayName={state.displayName}
+          menu={state.menu}
+        />
+        {state.menu ?
           <Menu
-            displayName={this.state.displayName}
+            displayName={state.displayName}
             onNameChange={this.handleNameChange}
-            onNameSubmit={this.handleNameSubmit}
+            onGameStart={this.handleGameStart}
           />
         : []}
       </div>

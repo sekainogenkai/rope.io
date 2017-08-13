@@ -26,6 +26,11 @@ const styles = {
 }
 
 export default class Menu extends Component {
+  handleGameStart = (e) => {
+    e.preventDefault();
+    this.props.onGameStart();
+  }
+
   render() {
     const props = this.props;
     return (
@@ -39,7 +44,7 @@ export default class Menu extends Component {
           </div>
           <div style={styles.GameStart}>
             <span>Welcome to rope.io. Please enter your display name.</span>
-            <form onSubmit={props.onNameSubmit}>
+            <form onSubmit={this.handleGameStart}>
               <input
                 type='text'
                 value={props.displayName}
