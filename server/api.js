@@ -12,6 +12,7 @@ api.use(bodyParser.json());
 
 io.on('connection', (socket) => {
   console.log('A user connected!');
+  socket.emit('test', {test: 'stuff'});
   socket.on('pingcheck', function () {
     socket.emit('pongcheck');
   });

@@ -9,7 +9,6 @@ export default class Game extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    console.log('recieving next props');
     if (!nextProps.menu && this.props.menu) {
       console.log('we are going to try to connect');
       if (!this.socket) {
@@ -33,7 +32,7 @@ export default class Game extends Component {
   }
 
   handleConnect(socket) {
-    socket('pongcheck', () => {
+    socket.on('pongcheck', () => {
       const latency = Date.now();
       console.log('Latency: ' + latency + 'ms');
     });
