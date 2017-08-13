@@ -12,7 +12,7 @@ export default class Game extends Component {
     if (!nextProps.menu && this.props.menu) {
       console.log('we are going to try to connect');
       if (!this.socket) {
-        this.socket = io();
+        this.socket = io('ws://localhost:3002/');
         this.handleConnect(this.socket);
       }
     }
