@@ -5,9 +5,10 @@ const bodyParser = require('body-parser');
 
 const api = express();
 
-const http = require('http').Server(api);
+const http = require('http').createServer(api);
 const io = require('socket.io')(http);
 
+http.listen(3000);
 api.use(bodyParser.json());
 
 io.on('connection', (socket) => {
