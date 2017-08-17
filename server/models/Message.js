@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = (mongoose, createSchema, update) => {
-  const MenuPageMessage = createSchema({
+  const Message = createSchema({
     message: {
       type: String,
       required: true,
@@ -9,5 +9,5 @@ module.exports = (mongoose, createSchema, update) => {
     },
   });
 
-  return mongoose.model('MenuPageMessage', MenuPageMessage);
+  return mongoose.model('Message', Message);
 };
