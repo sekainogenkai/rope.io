@@ -1,4 +1,4 @@
-export default class ClientGame {
+export default class GameClient {
   constructor(pixi, socket, name) {
     this.pixi = pixi;
     this.socket = socket;

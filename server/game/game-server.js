@@ -2,7 +2,7 @@ const util = require('./util');
 const config = require('../../config.json');
 const matter = require('p2');
 
-module.exports = class ServerGame {
+module.exports = class GameServer {
   constructor() {
     this.players = [];
     this.platforms = []
@@ -11,9 +11,9 @@ module.exports = class ServerGame {
   }
 
   removePlayer(player) {
-    const playerIndex = game.players.indexOf(player);
+    const playerIndex = this.players.indexOf(player);
     if (playerIndex > -1) {
-      game.players.splice(playerIndex, 1);
+      this.players.splice(playerIndex, 1);
     }
   }
 

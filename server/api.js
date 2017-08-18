@@ -26,7 +26,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     game.removePlayer(currentPlayer);
-    console.log(`${name} disconnected`);
+    console.log(`${currentPlayer.name} disconnected`);
     socket.broadcast.emit('playerDisconnect', { name: currentPlayer.name });
   });
 
