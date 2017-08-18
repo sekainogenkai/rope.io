@@ -2,7 +2,8 @@ import React, {Component} from 'react';
 import * as PIXI from 'pixi.js';
 import io from 'socket.io-client';
 
-import Game from './client-game.js'
+//import config from '../../../config.json';
+import Game from './game-client';
 
 export default class PixiJS extends Component {
   componentWillReceiveProps(nextProps) {

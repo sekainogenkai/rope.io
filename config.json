@@ -1,0 +1,14 @@
+{
+  "api": {
+    "delay": 0,
+    "networkUpdate": 1
+  },
+  "game": {
+    "width": 1280,
+    "height": 700,
+    "mapWidth": 1280,
+    "mapHeight": 700,
+    "playerSize": 20
+  },
+  "db": "mongodb://localhost/rope-io"
+}

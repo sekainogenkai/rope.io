@@ -63,7 +63,6 @@ export default class App extends Component {
   }
 
   render() {
-    const state = this.state;
     return (
       <div>
         {this.pageSwitcher()}

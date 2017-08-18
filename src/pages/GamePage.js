@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import axios from 'axios';
 
 import PixiJS from './game/PixiJS';
 import Menu from './menu/Menu';

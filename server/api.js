@@ -4,34 +4,28 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const api = express();
 
+api.use(bodyParser.json());
+
 const server = require('http').createServer(api);
 const io = require('socket.io')(server);
 server.listen(3002);
 
-api.use(bodyParser.json());
-
-//const util = require('./game/util');
-const Game = require('./game/server-game');
+const config = require('../config.json');
+const Game = require('./game/game-server');
 const game = new Game();
-
 
 io.on('connection', (socket) => {
   console.log('a new user connected!');
   let currentPlayer;
 
   socket.on('join', (name) => {
-    currentPlayer = game.defaultPlayer(socket, name);
+    currentPlayer = game.addPlayer(socket, name);
     console.log(`${name} joined the game!`);
-    game.sockets[currentPlayer.id] = socket;
-    game.players.push(currentPlayer);
     console.log('players: ', game.players.map(player => player.name));
   });
 
   socket.on('disconnect', () => {
-    const playerIndex = game.players.indexOf(currentPlayer);
-    if (playerIndex > -1) {
-      game.players.splice(playerIndex, 1);
-    }
+    game.removePlayer(currentPlayer);
     console.log(`${name} disconnected`);
     socket.broadcast.emit('playerDisconnect', { name: currentPlayer.name });
   });
@@ -40,5 +34,7 @@ io.on('connection', (socket) => {
     socket.emit('pongcheck');
   });
 });
+
+setInterval(() => game.sendUpdates(), 1000 / config.api.networkUpdate);
 
 module.exports = api;
