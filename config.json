@@ -8,7 +8,9 @@
     "height": 700,
     "mapWidth": 1280,
     "mapHeight": 700,
-    "playerSize": 20
+    "fixedTimeStep": 30,
+    "maxSubSteps": 10,
+    "userSize": 1
   },
   "db": "mongodb://localhost/rope-io"
 }

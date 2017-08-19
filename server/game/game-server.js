@@ -1,47 +1,82 @@
 const util = require('./util');
 const config = require('../../config.json');
-const matter = require('p2');
+const p2 = require('p2');
 
 module.exports = class GameServer {
   constructor() {
-    this.players = [];
-    this.platforms = []
+    this.users = [];
+    this.platforms = [];
+    this.sockets = {};
     this.leaderboard = [];
     this.leaderboardChanged = false;
+    // P2 engine
+    this.world = new p2.World({
+      gravity:[0, -9.82],
+    });
+    // Create an infinite ground for testing
+    const ground = new p2.Body({
+      mass: 0 // Setting mass to 0 makes it static
+    });
+    const plane = new p2.Plane();
+    ground.addShape(plane);
+    this.world.addBody(ground);
   }
 
-  removePlayer(player) {
-    const playerIndex = this.players.indexOf(player);
-    if (playerIndex > -1) {
-      this.players.splice(playerIndex, 1);
+  removeUser(user) {
+    const userIndex = this.users.indexOf(user);
+    if (userIndex > -1) {
+      delete this.sockets[user.id];
+      this.users.splice(userIndex, 1);
     }
   }
 
-  addPlayer(socket, name) {
-    // We could eventually have a weighted random so weak players don't spawn too close to strong players
-    const position = {
-      x: util.randomInt(config.game.mapWidth),
-      y: util.randomInt(config.game.mapHeight),
-    }
-    //TODO update to physics thing
-    const player = {
-      socket: socket,
+  addUser(socket, name) {
+    // We could eventually have a weighted random so weak users don't spawn too close to strong users
+    // create the physics body
+    const body = new p2.Body({
+      mass: 5,
+      position: [util.randomInt(config.game.mapWidth), util.randomInt(config.game.mapHeight)]
+    });
+    // make the shape
+    const shape = new p2.Circle({ radius: config.game.userSize});
+    body.addShape(shape);
+    // add the body to the world
+    this.world.addBody(body);
+
+    // define a user to keep track of stuff
+    const user = {
+      id: socket.id,
       name: name,
-      x: position.x,
-      y: position.y,
       radius: 10,
       hue: Math.round(Math.random() * 360),
-      grapple: { x: position.x, y: position.y, },
+      body: body,
       target: { x: 0, y: 0, },
     }
 
-    this.players.push(player);
-    return player;
+    this.users.push(user);
+    this.sockets[user.id] = socket;
+    return user;
+  }
+
+  update(deltaTime) {
+    this.world.step(1/config.game.fixedTimeStep, deltaTime, config.game.maxSubSteps);
   }
 
   sendUpdates() {
-    for (let player of this.players) {
-      console.log(`sending updates to ${player.name}`);
+    for (let user of this.users) {
+      // TODO this will obviously change
+      const userData = this.users.map(u => {
+        return {
+          id: u.id,
+          name: u.name,
+          radius: u.radius,
+          hue: u.hue,
+          position: u.body.position,
+          target: u.target,
+        }
+      });
+
+      this.sockets[user.id].emit('update', userData);
     }
   }
 }

@@ -2,13 +2,15 @@ export default class GameClient {
   constructor(pixi, socket, name) {
     this.pixi = pixi;
     this.socket = socket;
+    this.users = [];
     this.setupSocket();
     socket.emit('join', name);
   }
 
   setupSocket() {
     const socket = this.socket;
-    // Do a ping check
+
+    /* ping check */
     const startPingTime = Date.now();
     this.socket.emit('pingcheck');
     socket.on('pongcheck', () => {
@@ -16,7 +18,11 @@ export default class GameClient {
       console.log('ping: ' + latency + 'ms');
     });
 
-    socket.on('disconnect', function () {
+    socket.on('update', (userData) => {
+      this.users = userData;
+    });
+
+    socket.on('disconnect', () => {
       socket.close();
     });
   }
