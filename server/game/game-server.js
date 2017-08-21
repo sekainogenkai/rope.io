@@ -48,7 +48,7 @@ module.exports = class GameServer {
       id: socket.id,
       name: name,
       radius: 10,
-      hue: Math.round(Math.random() * 360),
+      color: '#000000',
       body: body,
       target: { x: 0, y: 0, },
     }
@@ -70,7 +70,7 @@ module.exports = class GameServer {
           id: u.id,
           name: u.name,
           radius: u.radius,
-          hue: u.hue,
+          color: u.color,
           position: u.body.position,
           target: u.target,
         }
