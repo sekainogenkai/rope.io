@@ -13,18 +13,20 @@ module.exports = class GameServer {
     this.world = new p2.World({
       gravity:[0, -9.82],
     });
-    // Create an infinite ground for testing
+    // Create an infinite ground for testing//////////
     const ground = new p2.Body({
       mass: 0 // Setting mass to 0 makes it static
     });
     const plane = new p2.Plane();
     ground.addShape(plane);
     this.world.addBody(ground);
+    ///////////////////////////////////////////////////
   }
 
   removeUser(user) {
     const userIndex = this.users.indexOf(user);
     if (userIndex > -1) {
+      this.sockets[user.id].broadcast.emit('userDisconnect', { name: user.name });
       delete this.sockets[user.id];
       this.users.splice(userIndex, 1);
     }
@@ -34,11 +36,11 @@ module.exports = class GameServer {
     // We could eventually have a weighted random so weak users don't spawn too close to strong users
     // create the physics body
     const body = new p2.Body({
-      mass: 5,
-      position: [util.randomInt(config.game.mapWidth), util.randomInt(config.game.mapHeight)]
+      mass: config.game.player.mass,
+      position: [100 + util.randomInt(6), util.randomInt(config.game.mapHeight)]
     });
     // make the shape
-    const shape = new p2.Circle({ radius: config.game.userSize});
+    const shape = new p2.Circle({ radius: config.game.player.size});
     body.addShape(shape);
     // add the body to the world
     this.world.addBody(body);
@@ -47,14 +49,32 @@ module.exports = class GameServer {
     const user = {
       id: socket.id,
       name: name,
-      radius: 10,
       color: '#000000',
       body: body,
-      target: { x: 0, y: 0, },
     }
 
     this.users.push(user);
     this.sockets[user.id] = socket;
+    socket.broadcast.emit('addPlayer', {
+      id: user.id,
+      name: user.name,
+      color: user.color,
+      state: {
+        position: user.body.position,
+        velocity: user.body.velocity,
+      },
+    });
+    socket.emit('start', this.users.map(u => {
+      return {
+        id: u.id,
+        name: u.name,
+        color: u.color,
+        state: {
+          position: user.body.position,
+          velocity: user.body.velocity,
+        },
+      }
+    }));
     return user;
   }
 
@@ -65,18 +85,16 @@ module.exports = class GameServer {
   sendUpdates() {
     for (let user of this.users) {
       // TODO this will obviously change
-      const userData = this.users.map(u => {
+      const visibleUsers = this.users.map(u => {
         return {
           id: u.id,
-          name: u.name,
-          radius: u.radius,
-          color: u.color,
-          position: u.body.position,
-          target: u.target,
+          state: {
+            position: u.body.position,
+            velocity: u.body.velocity,
+          },
         }
       });
-
-      this.sockets[user.id].emit('update', userData);
+      this.sockets[user.id].emit('update', visibleUsers);
     }
   }
 }

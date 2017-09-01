@@ -1,7 +1,7 @@
 {
   "api": {
     "delay": 0,
-    "networkUpdate": 1
+    "networkUpdate": 150
   },
   "game": {
     "width": 1280,
@@ -10,7 +10,10 @@
     "mapHeight": 700,
     "fixedTimeStep": 30,
     "maxSubSteps": 10,
-    "userSize": 1
+    "player": {
+      "size": 5,
+      "mass": 10
+    }
   },
   "db": "mongodb://localhost/rope-io"
 }

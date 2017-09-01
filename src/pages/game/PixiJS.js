@@ -9,7 +9,7 @@ export default class PixiJS extends Component {
   componentWillReceiveProps(nextProps) {
     if (!nextProps.menu && this.props.menu) {
       // Create a new game
-      if (!this.socket) {
+      if (!this.socket && !this.game) {
         console.log('joining game...');
         // We store socket here so that we can pass it to a chat if we ever have one
         this.socket = io('ws://localhost:3002/');

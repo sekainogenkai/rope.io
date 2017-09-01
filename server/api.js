@@ -27,7 +27,6 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     game.removeUser(currentUser);
     console.log(`${currentUser.name} disconnected`);
-    socket.broadcast.emit('userDisconnect', { name: currentUser.name });
   });
 
   socket.on('pingcheck', () => {
@@ -35,7 +34,6 @@ io.on('connection', (socket) => {
   });
 });
 
-// TODO find source for this code so I can credit that person
 const tickLength = 1000 / config.game.fixedTimeStep;
 let previousTick = Date.now();
 const gameLoop = () => {
@@ -55,6 +53,6 @@ const gameLoop = () => {
 }
 gameLoop();
 
-setInterval(() => game.sendUpdates(), 1000/config.api.networkUpdate);
+setInterval(() => game.sendUpdates(), config.api.networkUpdate);
 
 module.exports = api;
