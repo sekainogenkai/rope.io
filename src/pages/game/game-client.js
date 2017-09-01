@@ -1,6 +1,5 @@
 import * as PIXI from 'pixi.js';
 import p2 from 'p2';
-import op from 'objectpool';
 
 export default class GameClient {
   constructor(pixi, socket, name) {

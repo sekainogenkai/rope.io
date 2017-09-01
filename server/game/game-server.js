@@ -37,7 +37,7 @@ module.exports = class GameServer {
     // create the physics body
     const body = new p2.Body({
       mass: config.game.player.mass,
-      position: [100 + util.randomInt(6), util.randomInt(config.game.mapHeight)]
+      position: [util.randomInt(config.game.mapWidth), util.randomInt(config.game.mapHeight)]
     });
     // make the shape
     const shape = new p2.Circle({ radius: config.game.player.size});
