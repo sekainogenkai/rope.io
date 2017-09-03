@@ -11,7 +11,7 @@
     "fixedTimeStep": 30,
     "maxSubSteps": 10,
     "player": {
-      "size": 5,
+      "size": 10,
       "mass": 10
     }
   },

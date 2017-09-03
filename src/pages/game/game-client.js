@@ -1,5 +1,4 @@
 import * as PIXI from 'pixi.js';
-import p2 from 'p2';
 
 export default class GameClient {
   constructor(pixi, socket, name) {
@@ -7,9 +6,6 @@ export default class GameClient {
     this.pixi = pixi;
     this.socket = socket;
     this.players = {};
-    // grapics thing for drawing
-    this.graphics = new PIXI.Graphics();
-    this.pixi.stage.addChild(this.graphics);
     // Socket
     this.setupSocket();
     // join the game
@@ -53,21 +49,26 @@ export default class GameClient {
   }
 
   createPlayer(player) {
+    const graphics = new PIXI.Graphics();
+    graphics.beginFill(player.color, 1);
+    graphics.drawCircle(player.state.position[0], player.state.position[1], 10);
+    graphics.endFill();
+    const text = new PIXI.Text(player.name);
+    //graphics.addChild(text);
+    this.pixi.stage.addChild(graphics);
     return {
       name: player.name,
       color: player.color,
+      graphics: graphics,
       state: player.state,
       oldState: player.state,
     }
   }
 
   update(deltaTime) {
-    this.graphics.clear();
     for (let key in this.players) {
       let player = this.players[key];
-      this.graphics.beginFill(player.color, 1);
-      this.graphics.drawCircle(player.state.position[0], player.state.position[1], 5);
-      this.graphics.endFill();
+      player.graphics.position.set(player.state.position[0], player.state.position[1]);
     }
   }
 

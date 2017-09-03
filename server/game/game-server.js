@@ -49,7 +49,7 @@ module.exports = class GameServer {
     const user = {
       id: socket.id,
       name: name,
-      color: '#000000',
+      color: util.randomColor(),
       body: body,
     }
 
