@@ -10,7 +10,7 @@ const server = require('http').createServer(api);
 const io = require('socket.io')(server);
 server.listen(3002);
 
-const config = require('../config.json');
+const config = require('../src/config.json');
 const Game = require('./game/game-server');
 const game = new Game();
 

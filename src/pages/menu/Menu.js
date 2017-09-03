@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import config from '../../config.json';
 
 const styles = {
   Menu: {
@@ -45,7 +46,7 @@ export default class Menu extends Component {
               placeholder='Type a Nickname'
               value={props.name}
               onChange={props.onNameChange}
-              maxLength={20}
+              maxLength={config.game.player.nameMaxCharCount}
             />
             <button type='submit'>Play</button>
           </form>

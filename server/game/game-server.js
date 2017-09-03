@@ -1,5 +1,5 @@
 const util = require('./util');
-const config = require('../../config.json');
+const config = require('../../src/config.json');
 const p2 = require('p2');
 
 module.exports = class GameServer {
