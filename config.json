@@ -4,10 +4,10 @@
     "networkUpdate": 150
   },
   "game": {
-    "width": 1280,
-    "height": 700,
-    "mapWidth": 1280,
-    "mapHeight": 700,
+    "width": 1920,
+    "height": 1080,
+    "mapWidth": 1920,
+    "mapHeight": 1080,
     "fixedTimeStep": 30,
     "maxSubSteps": 10,
     "player": {
