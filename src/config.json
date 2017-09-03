@@ -11,7 +11,7 @@
     "fixedTimeStep": 30,
     "maxSubSteps": 10,
     "player": {
-      "nameMaxCharCount": 5,
+      "nameMaxCharCount": 20,
       "size": 5,
       "mass": 10
     }
