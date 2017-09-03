@@ -45,7 +45,7 @@ export default class Menu extends Component {
               placeholder='Type a Nickname'
               value={props.name}
               onChange={props.onNameChange}
-              maxLength={10}
+              maxLength={20}
             />
             <button type='submit'>Play</button>
           </form>
