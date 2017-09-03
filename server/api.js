@@ -20,7 +20,7 @@ io.on('connection', (socket) => {
 
   socket.on('join', (name) => {
     currentUser = game.addUser(socket, name);
-    console.log(`${name} joined the game!`);
+    console.log(`${name.substr(0, config.game.player.nameMaxCharCount)} joined the game!`);
     console.log('users: ', game.users.map(user => user.name));
   });
 

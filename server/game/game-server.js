@@ -33,6 +33,9 @@ module.exports = class GameServer {
   }
 
   addUser(socket, name) {
+    // limit character count of the player name.
+    name = name.substr(0, config.game.player.nameMaxCharCount);
+
     // We could eventually have a weighted random so weak users don't spawn too close to strong users
     // create the physics body
     const body = new p2.Body({
@@ -55,9 +58,10 @@ module.exports = class GameServer {
 
     this.users.push(user);
     this.sockets[user.id] = socket;
+
     socket.broadcast.emit('addPlayer', {
       id: user.id,
-      name: user.name.substr(0,config.game.player.nameMaxCharCount),
+      name: user.name,
       color: user.color,
       state: {
         position: user.body.position,
