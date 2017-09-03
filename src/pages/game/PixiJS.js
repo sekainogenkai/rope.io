@@ -1,8 +1,7 @@
 import React, {Component} from 'react';
 import * as PIXI from 'pixi.js';
 import io from 'socket.io-client';
-
-//import config from '../../../config.json';
+import config from '../../config.json';
 import Game from './game-client';
 
 export default class PixiJS extends Component {
@@ -19,7 +18,7 @@ export default class PixiJS extends Component {
   }
 
   componentDidMount() {
-    this.pixi = new PIXI.Application(1280, 700, {
+    this.pixi = new PIXI.Application(config.game.screenWidth, config.game.screenHeight, {
       view: this.canvas,
       backgroundColor : 0x1099bb,
     });

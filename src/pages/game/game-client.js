@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js';
+import config from '../../config.json';
 
 export default class GameClient {
   constructor(pixi, socket, name) {
@@ -10,6 +11,21 @@ export default class GameClient {
     this.setupSocket();
     // join the game
     socket.emit('join', name);
+
+    ///debug stuff
+    const debug = new PIXI.Graphics();
+    debug.lineStyle(20, 0x00FFFF);
+    debug.beginFill(0x000000, 0);
+    debug.drawRect(0, 0, config.game.mapWidth, config.game.mapHeight);
+    debug.endFill();
+    debug.lineStyle(10, 0xFF0000);
+    debug.beginFill(0x000000, 0);
+    debug.drawRect(0, 0, config.game.screenWidth, config.game.screenHeight);
+    debug.endFill();
+    this.pixi.stage.addChild(debug);
+
+    this.graphics = new PIXI.Graphics();
+    this.pixi.stage.addChild(this.graphics);
   }
 
   setupSocket() {
@@ -49,26 +65,29 @@ export default class GameClient {
   }
 
   createPlayer(player) {
-    const graphics = new PIXI.Graphics();
-    graphics.beginFill(player.color, 1);
-    graphics.drawCircle(player.state.position[0], player.state.position[1], 10);
-    graphics.endFill();
-    const text = new PIXI.Text(player.name);
+    // const graphics = new PIXI.Graphics();
+    // graphics.beginFill(player.color, 1);
+    // graphics.drawCircle(player.state.position[0], player.state.position[1], 10);
+    // graphics.endFill();
+    //const text = new PIXI.Text(player.name);
     //graphics.addChild(text);
-    this.pixi.stage.addChild(graphics);
+    //this.pixi.stage.addChild(graphics);
     return {
       name: player.name,
       color: player.color,
-      graphics: graphics,
+      //graphics: graphics,
       state: player.state,
       oldState: player.state,
     }
   }
 
   update(deltaTime) {
+    this.graphics.clear();
     for (let key in this.players) {
       let player = this.players[key];
-      player.graphics.position.set(player.state.position[0], player.state.position[1]);
+      this.graphics.beginFill(player.color, 1);
+      this.graphics.drawCircle(player.state.position[0], player.state.position[1], config.game.player.size);
+      this.graphics.endFill();
     }
   }
 

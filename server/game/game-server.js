@@ -11,7 +11,7 @@ module.exports = class GameServer {
     this.leaderboardChanged = false;
     // P2 engine
     this.world = new p2.World({
-      gravity:[0, -9.82],
+      gravity: [0, -9.82],
     });
     // Create an infinite ground for testing//////////
     const ground = new p2.Body({
@@ -40,7 +40,7 @@ module.exports = class GameServer {
     // create the physics body
     const body = new p2.Body({
       mass: config.game.player.mass,
-      position: [util.randomInt(config.game.mapWidth), util.randomInt(config.game.mapHeight)]
+      position: [util.randomInt(config.game.mapWidth), util.randomInt(config.game.mapHeight)],
     });
     // make the shape
     const shape = new p2.Circle({ radius: config.game.player.size});
