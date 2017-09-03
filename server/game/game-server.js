@@ -55,7 +55,8 @@ module.exports = class GameServer {
       name: name,
       color: util.randomColor(),
       body: body,
-    }
+      input: {angle: 0, mouseDown: false},
+    };
 
     this.users.push(user);
     this.sockets[user.id] = socket;
@@ -83,7 +84,17 @@ module.exports = class GameServer {
     return user;
   }
 
+  userInput(currentUser, angle, mouseDown) {
+    currentUser.input = {angle: angle?angle:0, mouseDown: !!mouseDown};
+  }
+
   update(deltaTime) {
+    for(let user of this.users) {
+      user.body.applyForce([
+        Math.cos(user.input.angle) * config.game.player.moveForce,
+        Math.sin(user.input.angle) * config.game.player.moveForce
+      ]);
+    }
     this.world.step(1/config.game.fixedTimeStep, deltaTime, config.game.maxSubSteps);
   }
 

@@ -89,6 +89,13 @@ export default class GameClient {
       this.graphics.drawCircle(player.state.position[0], player.state.position[1], config.game.player.size);
       this.graphics.endFill();
     }
+    this.emitMouse();
+  }
+
+  emitMouse() {
+    const mousePos = this.pixi.renderer.plugins.interaction.mouse.global;
+    const playerPos = (this.players[this.socket.id]) ? this.players[this.socket.id].state.position : mousePos;
+    this.socket.emit('0', Math.atan2(mousePos.y - playerPos[1], mousePos.x - playerPos[0]), false);
   }
 
   destroy() {

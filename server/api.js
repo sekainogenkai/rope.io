@@ -32,6 +32,12 @@ io.on('connection', (socket) => {
   socket.on('pingcheck', () => {
     socket.emit('pongcheck');
   });
+
+  socket.on('0', (angle, mouseDown) => {
+    if (currentUser) {
+      game.userInput(currentUser, angle, mouseDown);
+    }
+  })
 });
 
 const tickLength = 1000 / config.game.fixedTimeStep;
