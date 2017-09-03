@@ -57,7 +57,7 @@ module.exports = class GameServer {
     this.sockets[user.id] = socket;
     socket.broadcast.emit('addPlayer', {
       id: user.id,
-      name: user.name.substr(0,config.player.nameMaxCharCount),
+      name: user.name.substr(0,config.game.player.nameMaxCharCount),
       color: user.color,
       state: {
         position: user.body.position,

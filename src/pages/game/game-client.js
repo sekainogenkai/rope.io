@@ -1,9 +1,4 @@
 import * as PIXI from 'pixi.js';
-<<<<<<< HEAD
-import p2 from 'p2';
-//import op from 'objectpool';
-=======
->>>>>>> ab2e3607fcff5fe1be5dca49b16ad4c513243d4f
 
 export default class GameClient {
   constructor(pixi, socket, name) {
