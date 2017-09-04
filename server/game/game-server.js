@@ -90,10 +90,12 @@ module.exports = class GameServer {
 
   update(deltaTime) {
     for(let user of this.users) {
-      user.body.applyForce([
-        Math.cos(user.input.angle) * config.game.player.moveForce,
-        Math.sin(user.input.angle) * config.game.player.moveForce
-      ]);
+      if (user.input.mouseDown) {
+        user.body.applyForce([
+          Math.cos(user.input.angle) * config.game.player.moveForce,
+          Math.sin(user.input.angle) * config.game.player.moveForce
+        ]);
+      }
     }
     this.world.step(1/config.game.fixedTimeStep, deltaTime, config.game.maxSubSteps);
   }

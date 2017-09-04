@@ -3,16 +3,23 @@ import config from '../../config.json';
 
 export default class GameClient {
   constructor(pixi, socket, name) {
-    pixi.ticker.add(this.update, this);
     this.pixi = pixi;
+    this.renderer = pixi.renderer;
+    this.stage = pixi.stage;
     this.socket = socket;
     this.players = {};
-    // Socket
+    // setup clicking stuff
+    this.mouseDown = false;
+    this.stage.hitArea = new PIXI.Rectangle(0, 0, config.game.screenWidth, config.game.screenHeight);
+    this.stage.interactive = true;
+    this.stage.on("mousedown", (e) => this.mouseDown = true);
+    this.stage.on("mouseup", (e) => this.mouseDown = false);
+    // setup socket
     this.setupSocket();
     // join the game
     socket.emit('join', name);
 
-    ///debug stuff
+    // debug stuff
     const debug = new PIXI.Graphics();
     debug.lineStyle(20, 0x00FFFF);
     debug.beginFill(0x000000, 0);
@@ -22,10 +29,11 @@ export default class GameClient {
     debug.beginFill(0x000000, 0);
     debug.drawRect(0, 0, config.game.screenWidth, config.game.screenHeight);
     debug.endFill();
-    this.pixi.stage.addChild(debug);
+    this.stage.addChild(debug);
 
+    // drawing players
     this.graphics = new PIXI.Graphics();
-    this.pixi.stage.addChild(this.graphics);
+    this.stage.addChild(this.graphics);
   }
 
   setupSocket() {
@@ -35,6 +43,8 @@ export default class GameClient {
         this.players[player.id] = this.createPlayer(player);
       }
       console.log(this.players);
+      // start the update loop
+      this.pixi.ticker.add(this.update, this);
     });
 
     socket.on('addPlayer', (player) => {
@@ -93,9 +103,9 @@ export default class GameClient {
   }
 
   emitMouse() {
-    const mousePos = this.pixi.renderer.plugins.interaction.mouse.global;
-    const playerPos = (this.players[this.socket.id]) ? this.players[this.socket.id].state.position : mousePos;
-    this.socket.emit('0', Math.atan2(mousePos.y - playerPos[1], mousePos.x - playerPos[0]), false);
+    const mousePos = this.renderer.plugins.interaction.mouse.global;
+    const playerPos = this.players[this.socket.id].state.position;
+    this.socket.emit('0', Math.atan2(mousePos.y - playerPos[1], mousePos.x - playerPos[0]), this.mouseDown);
   }
 
   destroy() {
