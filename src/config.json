@@ -1,13 +1,11 @@
 {
   "api": {
-    "delay": 0,
     "networkUpdate": 150
   },
   "game": {
-    "screenWidth": 1920,
-    "screenHeight": 1080,
-    "mapWidth": 1920,
-    "mapHeight": 1080,
+    "test": [10, 10],
+    "screenSize": [1920, 1080],
+    "mapSize": [1920, 1080],
     "fixedTimeStep": 30,
     "maxSubSteps": 10,
     "player": {

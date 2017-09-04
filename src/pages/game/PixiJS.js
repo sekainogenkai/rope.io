@@ -4,6 +4,8 @@ import io from 'socket.io-client';
 import config from '../../config.json';
 import Game from './game-client';
 
+const screenRatio = config.game.screenSize[0]/config.game.screenSize[1];
+
 export default class PixiJS extends Component {
   componentWillReceiveProps(nextProps) {
     if (!nextProps.menu && this.props.menu) {
@@ -18,7 +20,7 @@ export default class PixiJS extends Component {
   }
 
   componentDidMount() {
-    this.pixi = new PIXI.Application(config.game.screenWidth, config.game.screenHeight, {
+    this.pixi = new PIXI.Application(config.game.screenSize[0], config.game.screenSize[1], {
       view: this.canvas,
       backgroundColor : 0x1099bb,
     });
@@ -27,9 +29,17 @@ export default class PixiJS extends Component {
   }
 
   handleWindowResize = () => {
-    console.log('resizing screen')
-    this.pixi.view.style.width = `${window.innerWidth}px`;
-    this.pixi.view.style.height = `${window.innerHeight}px`;
+    console.log('resizing screen');
+    let w, h = 0;
+    if (window.innerWidth / window.innerHeight <= screenRatio) {
+        w = window.innerHeight * screenRatio;
+        h = window.innerHeight;
+    } else {
+        w = window.innerWidth;
+        h = window.innerWidth / screenRatio;
+    }
+    this.pixi.renderer.view.style.width = w + 'px';
+    this.pixi.renderer.view.style.height = h + 'px';
   }
 
   componentWillUnmount() {
