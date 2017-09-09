@@ -46,7 +46,7 @@ module.exports = class GameServer {
   removeUser(user) {
     const userIndex = this.users.indexOf(user);
     if (userIndex > -1) {
-      this.sockets[user.id].broadcast.emit('userDisconnect', { name: user.name });
+      this.sockets[user.id].broadcast.emit('removePlayer', user.id);
       delete this.sockets[user.id];
       this.world.removeBody(this.users[userIndex].body);
       this.users.splice(userIndex, 1);
