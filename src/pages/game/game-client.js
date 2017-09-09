@@ -47,6 +47,12 @@ export default class GameClient {
       console.log(`${player.name} joined the game!`)
     });
 
+    socket.on('removePlayer', (id) => {
+      console.log(id);
+      console.log(`${this.players[id].name} left the game!`)
+      delete this.players[id];
+    });
+
     socket.on('update', (players) => {
       for (let player of players) {
         let u = this.players[player.id];
