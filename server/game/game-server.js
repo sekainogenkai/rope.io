@@ -82,8 +82,8 @@ module.exports = class GameServer {
     const rope = new p2.LinearSpring(body, hook, {
         restLength : 500,
         stiffness : 10,
-        localAnchorA : [0, 0],
-        localAnchorB : [0, 0],
+        localAnchorA : [0.5, 0.5],
+        localAnchorB : [0.5, 0.5],
     });
     // -----------------------------------------
 

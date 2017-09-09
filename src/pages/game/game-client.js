@@ -98,14 +98,20 @@ export default class GameClient {
     this.graphics.clear();
     for (let key in this.players) {
       let player = this.players[key];
-      this.graphics.beginFill(player.color, 1);
-      this.graphics.drawCircle(player.state.position[0], player.state.position[1], config.game.player.size);
-      this.graphics.endFill();
       if (player.state.hookPosition) {
         this.graphics.lineStyle(5, 0x000000);
         this.graphics.moveTo(player.state.position[0], player.state.position[1]);
         this.graphics.lineTo(player.state.hookPosition[0], player.state.hookPosition[1]);
+        this.graphics.lineStyle(1, 0x000000);
+        this.graphics.beginFill(player.color, 1);
+        this.graphics.drawCircle(player.state.hookPosition[0], player.state.hookPosition[1], config.game.player.rope.size);
+        this.graphics.endFill();
       }
+      this.graphics.lineStyle(1, 0x000000);
+      this.graphics.beginFill(player.color, 1);
+      this.graphics.drawCircle(player.state.position[0], player.state.position[1], config.game.player.size);
+      this.graphics.endFill();
+
     }
     this.emitMouse();
   }
