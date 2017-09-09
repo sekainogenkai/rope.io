@@ -19,6 +19,5 @@
       "mass": 10,
       "moveForce": 600
     }
-  },
-  "db": "mongodb://localhost/rope-io"
+  }
 }
