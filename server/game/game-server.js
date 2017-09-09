@@ -11,7 +11,7 @@ module.exports = class GameServer {
     this.leaderboardChanged = false;
     // P2 engine
     this.world = new p2.World({
-      gravity: [0, -9.82],
+      gravity: [0, 9.82],
     });
     // The borders of the world
     const borders = [
@@ -74,12 +74,17 @@ module.exports = class GameServer {
     // make the grapple Circle
     const hook = new p2.Body({
       mass: config.game.player.rope.mass,
-      position: [0, 0]
+      position: [0, 0],
     });
     const hookShape = new p2.Circle({radios: config.game.player.rope.size });
     hook.addShape(hookShape);
     // make spring constraint
-    const rope = new p2.LinearSpring(body, hook);
+    const rope = new p2.LinearSpring(body, hook, {
+        restLength : 500,
+        stiffness : 10,
+        localAnchorA : [0, 0],
+        localAnchorB : [0, 0],
+    });
     // -----------------------------------------
 
     // define a user to keep track of stuff

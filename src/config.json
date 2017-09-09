@@ -10,9 +10,9 @@
     "maxSubSteps": 10,
     "player": {
       "rope": {
-        "mass": 500,
+        "mass": 1,
         "size": 10,
-        "moveForce": 50
+        "moveForce": 10000
       },
       "nameMaxCharCount": 20,
       "size": 20,
