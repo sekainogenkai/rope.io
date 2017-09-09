@@ -144,7 +144,7 @@ module.exports = class GameServer {
         user.hooking = true;
         // Set the hook a bit outside of the user's position
         const distanceFromPlayer = config.game.player.size + config.game.player.rope.size;
-        console.log(distanceFromPlayer);
+        //console.log(distanceFromPlayer);
         user.hook.velocity = [0,0];
         user.hook.position = [
           user.body.position[0] + Math.cos(user.input.angle) * distanceFromPlayer,
