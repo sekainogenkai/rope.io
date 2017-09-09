@@ -13,14 +13,34 @@ module.exports = class GameServer {
     this.world = new p2.World({
       gravity: [0, -9.82],
     });
-    // Create an infinite ground for testing//////////
-    const ground = new p2.Body({
-      mass: 0 // Setting mass to 0 makes it static
-    });
-    const plane = new p2.Plane();
-    ground.addShape(plane);
-    this.world.addBody(ground);
-    ///////////////////////////////////////////////////
+    // The borders of the world
+    const borders = [
+      new p2.Body({
+        position: [0, 0],
+        angle: 0,
+        mass: 0,
+      }),
+      new p2.Body({
+        position: [0, config.game.mapSize[1]],
+        angle: (3 * Math.PI) / 2,
+        mass: 0,
+      }),
+      new p2.Body({
+        position: config.game.mapSize,
+        angle: Math.PI,
+        mass: 0,
+      }),
+      new p2.Body({
+        position: [config.game.mapSize[0], 0],
+        angle: Math.PI / 2 ,
+        mass: 0,
+      }),
+    ];
+    for (let border of borders) {
+      let plane = new p2.Plane();
+      border.addShape(plane);
+      this.world.addBody(border);
+    }
   }
 
   removeUser(user) {
