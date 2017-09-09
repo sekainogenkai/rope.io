@@ -43,6 +43,7 @@ module.exports = class GameServer {
     const body = new p2.Body({
       mass: config.game.player.mass,
       position: [util.randomInt(config.game.mapSize[0]), util.randomInt(config.game.mapSize[1])],
+      damping: .7,
     });
     // make the shape
     const shape = new p2.Circle({ radius: config.game.player.size });
@@ -116,13 +117,29 @@ module.exports = class GameServer {
       if (mouseDown && !user.input.pastMouseDown) {
         // if the body isn't in the world create it
         user.hooking = true;
+        // Set the hook a bit outside of the user's position
+        const distanceFromPlayer = config.game.player.size + config.game.player.rope.size;
+        console.log(distanceFromPlayer);
+        user.hook.velocity = [0,0];
+        user.hook.position = [
+          user.body.position[0] + Math.cos(user.input.angle) * distanceFromPlayer,
+          user.body.position[1] + Math.sin(user.input.angle) * distanceFromPlayer,
+          ];
+
+        // add the hook and spring back to the world
         this.world.addBody(user.hook);
         this.world.addSpring(user.rope);
       } else if (!mouseDown && user.input.pastMouseDown) {
         user.hooking = false;
+        // delete the hook and spring from the world
         this.world.removeBody(user.hook);
         this.world.removeSpring(user.rope);
         //console.log('removing spring', this.world.springs.length);
+      } else if (mouseDown && user.input.pastMoustDown) {
+        user.hook.applyForce([
+          Math.cos(user.input.angle) * config.game.player.rope.moveForce,
+          Math.sin(user.input.angle) * config.game.player.rope.moveForce
+        ])
       }
       user.input.pastMouseDown = mouseDown;
     }
