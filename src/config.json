@@ -16,7 +16,7 @@
       "nameMaxCharCount": 20,
       "size": 20,
       "mass": 10,
-      "moveForce": 10000
+      "moveForce": 100
     }
   },
   "db": "mongodb://localhost/rope-io"
