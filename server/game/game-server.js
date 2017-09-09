@@ -76,7 +76,7 @@ module.exports = class GameServer {
       mass: config.game.player.rope.mass,
       position: [0, 0],
     });
-    const hookShape = new p2.Circle({radios: config.game.player.rope.size });
+    const hookShape = new p2.Circle({ radius: config.game.player.rope.size });
     hook.addShape(hookShape);
     // make spring constraint
     const rope = new p2.LinearSpring(body, hook, {
