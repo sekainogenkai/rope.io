@@ -44,7 +44,6 @@ export default class MainPage extends Component {
         {state.menu ?
           <Menu
             name={state.name}
-            message={this.props.message}
             onNameChange={this.handleNameChange}
             onGameStart={this.handleGameStart}
           />
