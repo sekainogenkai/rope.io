@@ -8,7 +8,7 @@ api.use(bodyParser.json());
 
 const server = require('http').createServer(api);
 const io = require('socket.io')(server);
-server.listen(3002);
+server.listen(3002, '0.0.0.0');
 
 const config = require('../src/config.json');
 const Game = require('./game/game-server');
