@@ -1,18 +1,22 @@
 {
   "api": {
-    "networkUpdate": 150
+    "networkUpdate": 30
   },
   "game": {
     "test": [10, 10],
     "screenSize": [1920, 1080],
     "mapSize": [1920, 1080],
-    "fixedTimeStep": 30,
+    "fixedTimeStep": 17,
     "maxSubSteps": 10,
     "player": {
+      "rope": {
+        "mass": 5,
+        "size": 10
+      },
       "nameMaxCharCount": 20,
       "size": 20,
       "mass": 10,
-      "moveForce": 1000
+      "moveForce": 10000
     }
   },
   "db": "mongodb://localhost/rope-io"

@@ -39,15 +39,27 @@ module.exports = class GameServer {
 
     // We could eventually have a weighted random so weak users don't spawn too close to strong users
     // create the physics body
+    // --------------------------------------
     const body = new p2.Body({
       mass: config.game.player.mass,
       position: [util.randomInt(config.game.mapSize[0]), util.randomInt(config.game.mapSize[1])],
     });
     // make the shape
-    const shape = new p2.Circle({ radius: config.game.player.size});
+    const shape = new p2.Circle({ radius: config.game.player.size });
     body.addShape(shape);
     // add the body to the world
     this.world.addBody(body);
+    // --------------------------------------
+    // make the grapple Circle
+    const hook = new p2.Body({
+      mass: config.game.player.rope.mass,
+      position: [0, 0]
+    });
+    const hookShape = new p2.Circle({radios: config.game.player.rope.size });
+    hook.addShape(hookShape);
+    // make spring constraint
+    const rope = new p2.LinearSpring(body, hook);
+    // -----------------------------------------
 
     // define a user to keep track of stuff
     const user = {
@@ -55,7 +67,9 @@ module.exports = class GameServer {
       name: name,
       color: util.randomColor(),
       body: body,
-      input: {angle: 0, mouseDown: false},
+      input: {angle: 0, mouseDown: false, pastMouseDown: false},
+      hook: hook,
+      rope: rope,
     };
 
     this.users.push(user);
@@ -85,17 +99,29 @@ module.exports = class GameServer {
   }
 
   userInput(currentUser, angle, mouseDown) {
-    currentUser.input = {angle: angle?angle:0, mouseDown: !!mouseDown};
+    currentUser.input.angle = angle?angle:0;
+    currentUser.input.mouseDown = mouseDown;
   }
 
   update(deltaTime) {
     for(let user of this.users) {
-      if (user.input.mouseDown) {
         user.body.applyForce([
           Math.cos(user.input.angle) * config.game.player.moveForce,
           Math.sin(user.input.angle) * config.game.player.moveForce
         ]);
+      // grappling
+      const mouseDown = user.input.mouseDown;
+      console.log(mouseDown, user.input.pastMouseDown);
+      if (mouseDown && !user.input.pastMouseDown) {
+        // if the body isn't in the world create it
+        this.world.addBody(user.hook);
+        this.world.addSpring(user.rope);
+      } else if (!mouseDown && user.input.pastMouseDown) {
+        this.world.removeBody(user.hook);
+        this.world.removeSpring(user.rope);
+          console.log('removing spring', this.world.springs.length);
       }
+      user.input.pastMouseDown = mouseDown;
     }
     this.world.step(1/config.game.fixedTimeStep, deltaTime, config.game.maxSubSteps);
   }
