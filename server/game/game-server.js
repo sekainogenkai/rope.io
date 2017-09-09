@@ -70,6 +70,7 @@ module.exports = class GameServer {
       input: {angle: 0, mouseDown: false, pastMouseDown: false},
       hook: hook,
       rope: rope,
+      hooking: false,
     };
 
     this.users.push(user);
@@ -111,15 +112,17 @@ module.exports = class GameServer {
         ]);
       // grappling
       const mouseDown = user.input.mouseDown;
-      console.log(mouseDown, user.input.pastMouseDown);
+      //console.log(mouseDown, user.input.pastMouseDown);
       if (mouseDown && !user.input.pastMouseDown) {
         // if the body isn't in the world create it
+        user.hooking = true;
         this.world.addBody(user.hook);
         this.world.addSpring(user.rope);
       } else if (!mouseDown && user.input.pastMouseDown) {
+        user.hooking = false;
         this.world.removeBody(user.hook);
         this.world.removeSpring(user.rope);
-          console.log('removing spring', this.world.springs.length);
+        //console.log('removing spring', this.world.springs.length);
       }
       user.input.pastMouseDown = mouseDown;
     }
@@ -130,11 +133,14 @@ module.exports = class GameServer {
     for (let user of this.users) {
       // TODO this will obviously change
       const visibleUsers = this.users.map(u => {
+        //console.log(u.hooking);
         return {
           id: u.id,
           state: {
             position: u.body.position,
             velocity: u.body.velocity,
+            hookPosition: u.hooking?u.hook.position:null,
+            hookVelocity: u.hook.velocity,
           },
         }
       });
