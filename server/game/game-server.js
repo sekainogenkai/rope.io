@@ -98,7 +98,6 @@ module.exports = class GameServer {
     hook.locked = false;
 
     hook.onCollide = (collidedBody) => {
-      console.log(hook);
       if (!hook.locked && collidedBody.attachable && (collidedBody.id !== hook.bodyId)) {
         hook.locked = true;
         hook.lockConstraint = new p2.LockConstraint(hook, collidedBody);

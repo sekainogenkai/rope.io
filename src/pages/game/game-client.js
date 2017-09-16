@@ -3,12 +3,12 @@ import config from '../../config.json';
 
 export default class GameClient {
   constructor(canvas, pixi, socket, name) {
-    console.log(config.game.test[0])
     this.pixi = pixi;
     this.renderer = pixi.renderer;
     this.stage = pixi.stage;
     this.socket = socket;
     this.players = {};
+    this.packetBuffer = new Array(3).fill({});
     // setup clicking stuff
     this.mouseDown = false;
     canvas.addEventListener('mousedown', () => this.mouseDown = true);
@@ -54,6 +54,10 @@ export default class GameClient {
     });
 
     socket.on('update', (players) => {
+      this.packetBuffer.unshift({
+        players: players,
+      });
+      this.packetBuffer.pop();
       for (let player of players) {
         let u = this.players[player.id];
         u.oldState = u.state;
@@ -83,9 +87,22 @@ export default class GameClient {
     //const text = new PIXI.Text(player.name);
     //graphics.addChild(text);
     //this.pixi.stage.addChild(graphics);
+
+    let text = new PIXI.Text(player.name, {
+      fontFamily : 'Arial',
+      fontSize: 24,
+      fill : 0xffffff,
+      align : 'center',
+      stroke: 0x000000,
+      strokeThickness: 1,
+    });
+    text.anchor.set(0.5, 2);
+    this.pixi.stage.addChild(text);
+    // this will most likely change soon
     return {
       name: player.name,
       color: player.color,
+      text: text,
       //graphics: graphics,
       state: player.state,
       oldState: player.state,
@@ -104,6 +121,7 @@ export default class GameClient {
     this.graphics.clear();
     for (let key in this.players) {
       let player = this.players[key];
+      // draw hook if it exists
       if (player.state.hookPosition) {
         this.graphics.lineStyle(5, 0x000000);
         this.graphics.moveTo(player.state.position[0], player.state.position[1]);
@@ -113,11 +131,13 @@ export default class GameClient {
         this.graphics.drawCircle(player.state.hookPosition[0], player.state.hookPosition[1], config.game.player.grapple.size);
         this.graphics.endFill();
       }
+      // draw the player
       this.graphics.lineStyle(1, 0x000000);
       this.graphics.beginFill(player.color, 1);
       this.graphics.drawCircle(player.state.position[0], player.state.position[1], config.game.player.size);
       this.graphics.endFill();
-
+      // reposition name text
+      player.text.position.set(player.state.position[0], player.state.position[1]) ;
     }
     this.emitMouse();
   }
