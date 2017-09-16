@@ -36,7 +36,7 @@ export default class Menu extends Component {
         </div>
         <div style={styles.Message}>
           <h2>Message From the Creators</h2>
-          <p>{props.message}</p>
+          <p>Welcome to our wonderful game. I hope you love it!</p>
         </div>
         <div style={styles.GameStart}>
           <span>Welcome to rope.io</span>
