@@ -90,15 +90,17 @@ module.exports = class GameServer {
     });
     // ------------------------------------------------------------------------------------
     // Collision
+    hook.hook = true;
     hook.userId = socket.id;
     hook.lockConstraint = null;
+    hook.locked = false;
     body.userId = socket.id;
 
-    hook.onCollide = (body) => {
+    hook.onCollide = (collidedBody) => {
       console.log('a hook collided with something');
-      if (!body.userId || body.userId !== hook.userId) {
-
-        hook.lockConstraint = new p2.LockConstraint(hook, body);
+      if (!collidedBody.userId || collidedBody.userId !== hook.userId && !hook.locked && !collidedBody.hook) {
+        hook.locked = true;
+        hook.lockConstraint = new p2.LockConstraint(hook, collidedBody);
         this.world.addConstraint(hook.lockConstraint);
         console.log('change the properties of the hook to make you grapple towards it');
         Object.assign(rope, config.game.player.grapple.contracted);
@@ -176,9 +178,10 @@ module.exports = class GameServer {
         user.hooking = false;
         Object.assign(user.rope, config.game.player.grapple.extended);
         // delete the hook and spring from the world
-        this.world.removeConstraint(user.hook.lockConstraint)
         this.world.removeSpring(user.rope);
+        this.world.removeConstraint(user.hook.lockConstraint);
         this.world.removeBody(user.hook);
+        user.hook.locked = false;
         //console.log('removing spring', this.world.springs.length);
       } else if (mouseDown && user.input.pastMoustDown) { // continue click
         user.hook.applyForce([
