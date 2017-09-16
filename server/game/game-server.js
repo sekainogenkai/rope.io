@@ -39,6 +39,7 @@ module.exports = class GameServer {
     ];
     for (let border of borders) {
       let plane = new p2.Plane();
+      border.attachable = true;
       border.addShape(plane);
       this.world.addBody(border);
     }
@@ -70,6 +71,7 @@ module.exports = class GameServer {
     // make the shape
     const shape = new p2.Circle({ radius: config.game.player.size });
     body.addShape(shape);
+    body.attachable = true;
     // add the body to the world
     this.world.addBody(body);
 
@@ -83,26 +85,25 @@ module.exports = class GameServer {
     hook.addShape(hookShape);
     // make spring constraint
     const rope = new p2.LinearSpring(body, hook, {
-      restLength : config.game.player.grapple.extended.length,
-        stiffness : 10,
-        localAnchorA : [0.5, 0.5],
-        localAnchorB : [0.5, 0.5],
+      restLength: config.game.player.grapple.extended.length,
+      stiffness: 10,
+      localAnchorA: [0.5, 0.5],
+      localAnchorB: [0.5, 0.5],
     });
     // ------------------------------------------------------------------------------------
     // Collision
-    hook.hook = true;
-    hook.userId = socket.id;
+    //hook.hook = true;
+    hook.bodyId = body.id;
     hook.lockConstraint = null;
     hook.locked = false;
-    body.userId = socket.id;
 
     hook.onCollide = (collidedBody) => {
-      console.log('a hook collided with something');
-      if (!collidedBody.userId || collidedBody.userId !== hook.userId && !hook.locked && !collidedBody.hook) {
+      console.log(hook);
+      if (!hook.locked && collidedBody.attachable && (collidedBody.id !== hook.bodyId)) {
         hook.locked = true;
         hook.lockConstraint = new p2.LockConstraint(hook, collidedBody);
         this.world.addConstraint(hook.lockConstraint);
-        console.log('change the properties of the hook to make you grapple towards it');
+        //change the properties of the hook to make you grapple towards it
         Object.assign(rope, config.game.player.grapple.contracted);
       }
     }
