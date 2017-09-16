@@ -11,7 +11,7 @@ module.exports = class GameServer {
     this.leaderboardChanged = false;
     // P2 engine
     this.world = new p2.World({
-      gravity: [0, 9.82],
+      gravity: [0, 500],
     });
     this.world.on('beginContact', this.onCollide);
     // The borders of the world
@@ -72,26 +72,39 @@ module.exports = class GameServer {
     body.addShape(shape);
     // add the body to the world
     this.world.addBody(body);
-    // --------------------------------------
+
+    // ------------------------------------------------------------------------------
     // make the grapple Circle
     const hook = new p2.Body({
-      mass: config.game.player.rope.mass,
+      mass: config.game.player.grapple.mass,
       position: [0, 0],
     });
-    const hookShape = new p2.Circle({ radius: config.game.player.rope.size });
+    const hookShape = new p2.Circle({ radius: config.game.player.grapple.size });
     hook.addShape(hookShape);
-    hook.onCollide = (body) => {
-      console.log('a hook collided with something');
-    }
     // make spring constraint
     const rope = new p2.LinearSpring(body, hook, {
-        restLength : 500,
+      restLength : config.game.player.grapple.extended.length,
         stiffness : 10,
         localAnchorA : [0.5, 0.5],
         localAnchorB : [0.5, 0.5],
     });
-    // -----------------------------------------
+    // ------------------------------------------------------------------------------------
+    // Collision
+    hook.userId = socket.id;
+    hook.lockConstraint = null;
+    body.userId = socket.id;
 
+    hook.onCollide = (body) => {
+      console.log('a hook collided with something');
+      if (!body.userId || body.userId !== hook.userId) {
+
+        hook.lockConstraint = new p2.LockConstraint(hook, body);
+        this.world.addConstraint(hook.lockConstraint);
+        console.log('change the properties of the hook to make you grapple towards it');
+        Object.assign(rope, config.game.player.grapple.contracted);
+      }
+    }
+    // -----------------------------------------------------------------------------------
     // define a user to keep track of stuff
     const user = {
       id: socket.id,
@@ -144,11 +157,11 @@ module.exports = class GameServer {
       // grappling
       const mouseDown = user.input.mouseDown;
       //console.log(mouseDown, user.input.pastMouseDown);
-      if (mouseDown && !user.input.pastMouseDown) {
+      if (mouseDown && !user.input.pastMouseDown) { // click
         // if the body isn't in the world create it
         user.hooking = true;
         // Set the hook a bit outside of the user's position
-        const distanceFromPlayer = config.game.player.size + config.game.player.rope.size;
+        const distanceFromPlayer = config.game.player.size + config.game.player.grapple.size;
         //console.log(distanceFromPlayer);
         user.hook.velocity = [0,0];
         user.hook.position = [
@@ -159,16 +172,18 @@ module.exports = class GameServer {
         // add the hook and spring back to the world
         this.world.addBody(user.hook);
         this.world.addSpring(user.rope);
-      } else if (!mouseDown && user.input.pastMouseDown) {
+      } else if (!mouseDown && user.input.pastMouseDown) { // end click
         user.hooking = false;
+        Object.assign(user.rope, config.game.player.grapple.extended);
         // delete the hook and spring from the world
-        this.world.removeBody(user.hook);
+        this.world.removeConstraint(user.hook.lockConstraint)
         this.world.removeSpring(user.rope);
+        this.world.removeBody(user.hook);
         //console.log('removing spring', this.world.springs.length);
-      } else if (mouseDown && user.input.pastMoustDown) {
+      } else if (mouseDown && user.input.pastMoustDown) { // continue click
         user.hook.applyForce([
-          Math.cos(user.input.angle) * config.game.player.rope.moveForce,
-          Math.sin(user.input.angle) * config.game.player.rope.moveForce
+          Math.cos(user.input.angle) * config.game.player.grapple.moveForce,
+          Math.sin(user.input.angle) * config.game.player.grapple.moveForce
         ])
       }
       user.input.pastMouseDown = mouseDown;
@@ -202,6 +217,5 @@ module.exports = class GameServer {
     if (e.bodyB.onCollide) {
       e.bodyB.onCollide(e.bodyA);
     }
-    console.log('REEEEEEEEEEEEEEEEEEEEEE');
   }
 }

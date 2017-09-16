@@ -9,10 +9,18 @@
     "fixedTimeStep": 60,
     "maxSubSteps": 10,
     "player": {
-      "rope": {
+      "grapple": {
         "mass": 1,
         "size": 15,
-        "moveForce": 10000
+        "moveForce": 10000,
+        "extended": {
+          "restLength": 1000,
+          "stiffness": 10
+        },
+        "contracted": {
+          "restLength": 10,
+          "stiffness": 100
+        }
       },
       "nameMaxCharCount": 20,
       "size": 25,

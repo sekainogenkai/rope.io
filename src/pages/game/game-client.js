@@ -110,7 +110,7 @@ export default class GameClient {
         this.graphics.lineTo(player.state.hookPosition[0], player.state.hookPosition[1]);
         this.graphics.lineStyle(1, 0x000000);
         this.graphics.beginFill(player.color, 1);
-        this.graphics.drawCircle(player.state.hookPosition[0], player.state.hookPosition[1], config.game.player.rope.size);
+        this.graphics.drawCircle(player.state.hookPosition[0], player.state.hookPosition[1], config.game.player.grapple.size);
         this.graphics.endFill();
       }
       this.graphics.lineStyle(1, 0x000000);
