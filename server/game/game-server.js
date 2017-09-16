@@ -13,6 +13,7 @@ module.exports = class GameServer {
     this.world = new p2.World({
       gravity: [0, 9.82],
     });
+    this.world.on('beginContact', this.onCollide);
     // The borders of the world
     const borders = [
       new p2.Body({
@@ -48,6 +49,7 @@ module.exports = class GameServer {
     if (userIndex > -1) {
       this.sockets[user.id].broadcast.emit('removePlayer', user.id);
       delete this.sockets[user.id];
+      // we will need to remove the hook and constraint if those exist
       this.world.removeBody(this.users[userIndex].body);
       this.users.splice(userIndex, 1);
     }
@@ -78,6 +80,9 @@ module.exports = class GameServer {
     });
     const hookShape = new p2.Circle({ radius: config.game.player.rope.size });
     hook.addShape(hookShape);
+    hook.onCollide = (body) => {
+      console.log('a hook collided with something');
+    }
     // make spring constraint
     const rope = new p2.LinearSpring(body, hook, {
         restLength : 500,
@@ -188,5 +193,15 @@ module.exports = class GameServer {
       });
       this.sockets[user.id].emit('update', visibleUsers);
     }
+  }
+
+  onCollide(e) {
+    if (e.bodyA.onCollide) {
+      e.bodyA.onCollide(e.bodyB);
+    }
+    if (e.bodyB.onCollide) {
+      e.bodyB.onCollide(e.bodyA);
+    }
+    console.log('REEEEEEEEEEEEEEEEEEEEEE');
   }
 }
