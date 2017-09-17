@@ -13,7 +13,7 @@ export default class PixiJS extends Component {
       if (!this.socket && !this.game) {
         console.log('joining game...');
         // We store socket here so that we can pass it to a chat if we ever have one
-        this.socket = io('ws://localhost:3002/');
+        this.socket = io('ws://localhost:3001/');
         this.game = new Game(this.canvas, this.pixi, this.socket, nextProps.name);
       }
     }

@@ -8,9 +8,9 @@ process.on('unhandledRejection', (reason, p) => {
 });
 
 const app = require('./server/app');
-const autoserve = require('autoserve');
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
 
 // Make work with dev proxy thing in dev mode.
-app.set('port', 3001);
-
-autoserve(app);
+io.on('connection', app.onConnection);
+server.listen(3001, '0.0.0.0');

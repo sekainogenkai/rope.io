@@ -3,13 +3,14 @@
 const express = require('express');
 const path = require('path');
 const app = express();
+const api = require('./api');
 
 app.use((req, res, next) => {
   req.appBaseUrl = req.baseUrl;
   next();
 });
 
-app.use('/api', require('./api'));
+app.use('/api', api);
 
 const staticPath = path.join(path.dirname(__dirname), 'build');
 app.use(express.static(staticPath));
@@ -22,5 +23,9 @@ app.get('*', (req, res) => {
     // really should replace what we have here.
     res.sendFile(indexPath);
 });
+
+app.onConnection = function() {
+  api.onConnection.apply(api, arguments);
+}
 
 module.exports = app;
